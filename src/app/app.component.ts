@@ -7,6 +7,7 @@ import { Task } from './task';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  editMode = false;
   taskName = 'zadanie domyslne';
   taskDate = '';
   config: { [key: string]: string } | null  = null;
@@ -19,7 +20,7 @@ export class AppComponent {
     {
       name: 'Nauka Angulara',
       deadline: '2020-01-03',
-      done: false,
+      done: true,
     },
     {
       name: 'Sprzątanie kuwety',
@@ -36,16 +37,12 @@ export class AppComponent {
         date: new Date().toDateString(),
       };
     }, 500);
+    this.sortTasks();
   }
 
   clearTasks() {
     this.tasks = [];
   }
-
-  // onKeyUp(event: KeyboardEvent) {
-  //   const target = event.target as HTMLInputElement;
-  //   this.taskName = target.value;
-  // }
 
   createTask() {
     const task: Task = {
@@ -56,5 +53,26 @@ export class AppComponent {
     this.tasks.push(task);
     this.taskName='';
     this.taskDate='';
+    this.sortTasks();
+  }
+
+  switchEditMode(){
+    this.editMode = !this.editMode;
+  }
+
+  markTaskAsDone(task: Task){
+    task.done = true;
+    this.sortTasks();
+  }
+
+  deleteTask(task: Task){
+    this.tasks = this.tasks.filter(e => e !== task);
+    this.sortTasks();
+  }
+
+  private sortTasks(){
+    this.tasks = this.tasks.sort((a: Task, b: Task) =>
+      a.done === b.done ? 0 : a.done ? 1 : -1
+    );
   }
 }
